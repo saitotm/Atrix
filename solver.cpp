@@ -1,19 +1,18 @@
 #include "solver.h"
 //ガウスの消去法による一次方程式solver
-matalgo::Matrix solveLinearEqByGaussianElimination(matalgo::Matrix mat)
+
+template <typename Scalar, int Rows, int Cols>
+Atrix::Vector<Scalar, Rows> solveLinearEqByGaussianElimination(Atrix::Matrix<Scalar, Rows, Cols> mat)
 {
-    if (mat.size_col() == 0)
+    // Cols == 0の例外処理は未実装
+    int pivot = 0;
+    for (int i = 0; i < Cols - 1; ++i)
     {
-        //例外
-    }
-    std::size_t pivot = 0;
-    for (std::size_t i = 0; i < mat.size_col() - 1; ++i)
-    {
-        if (i >= mat.size_row())
+        if (i >= Rows)
         {
             break;
         }
-        for (std::size_t j = pivot; j < mat.size_row(); ++j)
+        for (int j = pivot; j < Rows; ++j)
         {
             if (mat[j][i] != 0)
             {
@@ -22,7 +21,7 @@ matalgo::Matrix solveLinearEqByGaussianElimination(matalgo::Matrix mat)
                     std::swap(mat[j], mat[pivot]);
                 }
                 mat[pivot] /= mat[pivot][i];
-                for (std::size_t k = 0; k < mat.size_row(); ++k)
+                for (int k = 0; k < Rows; ++k)
                 {
                     if (pivot == k || mat[k][i] == 0)
                     {
@@ -30,14 +29,11 @@ matalgo::Matrix solveLinearEqByGaussianElimination(matalgo::Matrix mat)
                     }
                     mat[k] -= mat[pivot] * mat[k][i];
                 }
-                std::cout << mat << std::endl
-                          << std::endl;
                 ++pivot;
                 break;
             }
         }
     }
-    return mat;
 }
 
 //LU分解による一次方程式solver
@@ -83,7 +79,6 @@ void LUdecomposition(const matalgo::Matrix &mat, matalgo::Matrix &out)
     {
     }
     std::size_t imax = std::min(mat.size_row(), mat.size_col());
-    float test[4][4];
 
     for (std::size_t i = 0; i < imax; ++i)
     {
